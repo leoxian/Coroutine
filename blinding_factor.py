@@ -6,10 +6,13 @@ from random import SystemRandom
 priv = RSA.generate(3072)
 pub = priv.publickey()
 
+
 ## Protocol: Blind signature ##
 
 # must be guaranteed to be chosen uniformly at random
 r = SystemRandom().randrange(pub.n >> 10, pub.n)
+
+
 msg = "my message" * 50 # large message (larger than the modulus)
 msg = str.encode(msg)
 
@@ -19,8 +22,10 @@ hash = SHA256.new()
 hash.update(msg)
 msgDigest = hash.digest()
 
+
 # user computes
 msg_blinded = pub.blind(msgDigest, r)
+
 
 # SA computes
 msg_blinded_signature = priv.sign(msg_blinded, 0)
@@ -33,3 +38,4 @@ hash = SHA256.new()
 hash.update(msg)
 msgDigest = hash.digest()
 print("Message is authentic: " + str(pub.verify(msgDigest, (msg_signature,))))
+

@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 x = []
 y = []
 temp_x=[]
-#group_list=[201,401,601,801,1001,1201,1401,1601,1801,2001,2201,2401,2601,2801,3001]
-#group_list=[201,401,601,801,1001,1301,1501]
+# group_list=[201,401,601,801,1001,1201,1401,1601,1801,2001,2201,2401,2601,2801,3001]
+# group_list=[201,401,601,801,1001,1301,1501]
 group_list=[101,201,301,401,501,601,701,801,901,1001,1101,1201,1301,1401,1501,1601,1701,1801,1901,2001,2101,2201,2301,2401,2501,2601,2701,2801,
             2901,3001,3101,3201,3301,3401,3501,3601,3701,3801,3901,4101,4201,4301,4401,4501,4601,4701,4801,4901,5001,5101,5201,5301,5401,5501,
             5601,5701,5801,5901,6001,6101,6201,6301,6401,6501,6601,6701,6801,6901,7001]
@@ -72,7 +72,7 @@ def PBFT(x):
 def pow_goroutine(Id,difficult,sleep_time):
     n = 1
     start_time = datetime.datetime.now()
-    #while n<100000000:
+    #while n<10:
     while n<1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:
         #.strftime('%H:%M:%S.%f'
         #now_time = datetime.datetime.now()
@@ -82,7 +82,7 @@ def pow_goroutine(Id,difficult,sleep_time):
         gevent.sleep(1)
         #if Id>301:
         #print('这是新的')
-        #print('n:{},id:{}'.format(n,Id))
+        print('n:{},id:{}'.format(n,Id))
     #print('n:{},id:{},time:{}'.format(n,Id,datetime.datetime.now().strftime('%H:%M:%S.%f')))
     time_stamp=(datetime.datetime.now()-start_time).total_seconds()
     return (Id,n,time_stamp)
@@ -136,14 +136,9 @@ for group in group_list:
     temp_x=[]
 ##
 x =[]
-with open('./experimental_data.txt') as f:
-    f.write('data_point')
-    for i in group_list:
-        x.append(i-1)
-        f.write(i-1)
-    f.write('time')
-    for h in y:
-        f.write(h)
+
+for i in group_list:
+    x.append(i-1)
 
 plt.figure()
 plt.plot(x,y)

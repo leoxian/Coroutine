@@ -8,10 +8,10 @@ x = []
 y = []
 temp_x=[]
 #group_list=[201,401,601,801,1001,1201,1401,1601,1801,2001,2201,2401,2601,2801,3001]
-
+#group_list=[201,401,601,801,1001,1301,1501]
 group_list=[101,201,301,401,501,601,701,801,901,1001,1101,1201,1301,1401,1501,1601,1701,1801,1901,2001,2101,2201,2301,2401,2501,2601,2701,2801,
-            2901,3001,3101,3201,3301,3401,3501,3601,3701,3801,3901,4001]
-            #4101,4201,4301,4401,4501,4601,4701,4801,4901,5001]
+            2901,3001,3101,3201,3301,3401,3501,3601,3701,3801,3901,4101,4201,4301,4401,4501,4601,4701,4801,4901,5001,5101,5201,5301,5401,5501,
+            5601,5701,5801,5901,6001,6101,6201,6301,6401,6501,6601,6701,6801,6901,7001]
 divide_list=[0]
 
 def pre_prepare(x):
@@ -22,60 +22,48 @@ def pre_prepare(x):
 
 def prepare(x,master):
     print('现在进入prepare')
-    temp = []
-    for i in range(len(x)-1):
-        if i ==0:
-            temp.extend(x[0:])
-        else:
-            temp.extend(x[0:i-1])
-            temp.extend(x[i+1:])
-
-        for t in temp:
-            print('t的值为')
-            print(t)
-            if len(t)==0:
-                pass
-            else:
-                t[1]=t[1]+1
+    for i in range(len(x)):
+        A = x[0:i]
+        B = x[i+1:]
+        for t in A:
+            t[1]=t[1]+1
+        for t in B:
+            t[1]=t[1]+1
     master[1]+=len(x)
-    return temp
+    return x,master
 
 
 def commit(x):
     print('现在进入commit')
-    temp = []
-    for i in range(len(x)-1):
-        if i ==0:
-            temp.extend(x[0:])
-        else:
-            temp.extend(x[0:i-1])
-            temp.extend(x[i+1:])
-
-        for t in temp:
-            if len(t)==0:
-                pass
-            else:
-                t[1]=t[1]+1
-    return temp
+    for i in range(len(x)):
+        A = x[0:i]
+        B = x[i+1:]
+        for t in A:
+            t[1]=t[1]+1
+        for t in B:
+            t[1]=t[1]+1
+    return x
 
 
 def PBFT(x):
-    temp=[]
     m = random.randint(0,len(x)-1)
     print('master 节点为:')
     master = x[m]
     print(master)
-    temp.extend(x[0:m-1])
-    temp.extend(x[m+1:])
+    del x[m]
     ##pre-prepare
-    temp = pre_prepare(temp)
+    x = pre_prepare(x)
+    print('pre_prepare阶段')
+    print(x)
     ##prepare
-    temp = prepare(temp,master)
-
+    x,master= prepare(x,master)
+    print('prepare阶段')
+    print(x)
     ##commit
-    temp.append(master)
-    temp = commit(temp)
-
+    x.append(master)
+    x = commit(x)
+    print('commit阶段')
+    print(x)
     ##reply
     return x
 
@@ -84,7 +72,7 @@ def PBFT(x):
 def pow_goroutine(Id,difficult,sleep_time):
     n = 1
     start_time = datetime.datetime.now()
-    #while n<100000000000000000000000:
+    #while n<100000000:
     while n<1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:
         #.strftime('%H:%M:%S.%f'
         #now_time = datetime.datetime.now()
@@ -94,7 +82,7 @@ def pow_goroutine(Id,difficult,sleep_time):
         gevent.sleep(1)
         #if Id>301:
         #print('这是新的')
-        print('n:{},id:{}'.format(n,Id))
+        #print('n:{},id:{}'.format(n,Id))
     #print('n:{},id:{},time:{}'.format(n,Id,datetime.datetime.now().strftime('%H:%M:%S.%f')))
     time_stamp=(datetime.datetime.now()-start_time).total_seconds()
     return (Id,n,time_stamp)
@@ -130,7 +118,7 @@ for group in group_list:
         if len(i)!=0: 
             i=sorted(i,key=lambda k:k[2])
             sort_final.append(i[0])
-            temp_x.append([i[0][0],1])
+            temp_x.append([i[0][0],0])
             print(i[0])
         else:
             pass
@@ -148,10 +136,16 @@ for group in group_list:
     temp_x=[]
 ##
 x =[]
-for i in group_list:
-    x.append(i-1)
-
+with open('./experimental_data.txt') as f:
+    f.write('data_point')
+    for i in group_list:
+        x.append(i-1)
+        f.write(i-1)
+    f.write('time')
+    for h in y:
+        f.write(h)
 
 plt.figure()
 plt.plot(x,y)
 plt.show()
+
